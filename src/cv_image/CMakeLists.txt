@@ -52,6 +52,7 @@ add_message_files(
    FILES
    EncoderData.msg
    DistanceData.msg
+   StateData.msg
 )
 
 ## Generate services in the 'srv' folder
