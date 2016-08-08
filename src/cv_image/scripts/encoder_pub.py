@@ -2,7 +2,6 @@
 from __future__ import print_function
 import roslib; roslib.load_manifest('cv_image')
 import rospy
-from std_msgs.msg import Int32
 from cv_image.msg import EncoderData 
 import os
 import sys
@@ -13,7 +12,7 @@ import time
 class Encoder:
 
     def __init__(self):
-        self.encoder_pub = rospy.Publisher("encoder_data", EncoderData)
+        self.encoder_pub = rospy.Publisher("encoder_data", EncoderData,queue_size=1)
         self.address = 0x08             #set address
         self.enc_read_cmd = [53]        #read the encoder value
         self.bus = smbus.SMBus(1)       #initialize bus
@@ -28,7 +27,7 @@ class Encoder:
         msg = EncoderData()
         
         while not rospy.is_shutdown():
-            print(self.enc_read(0),self.enc_read(1))  #left,right wheel
+            #print(self.enc_read(0),self.enc_read(1))  #left,right wheel
             msg.left = self.enc_read(0)
             msg.right = self.enc_read(1)
             self.encoder_pub.publish(msg)  

@@ -7,7 +7,7 @@ import os
 import sys
 import math
 
-class MotionPredictor:
+class StateChanger:
 
     def __init__(self):
         self.distance_data  = rospy.Subscriber("distance_travelled", DistanceData, self.get_state_change)
@@ -30,7 +30,7 @@ class MotionPredictor:
         
         self.distance_left  = left_d
         self.distance_right = right_d
-        angle = self.angle_truncate((drdt - dldt)/self.width)
+        angle = self.truncate_angle((drdt - dldt)/self.width)
 
         msg         = StateData()
         msg.left    = dldt
@@ -38,15 +38,15 @@ class MotionPredictor:
         msg.alpha   = angle
         self.motion_pub.publish(msg)      
 
-    def angle_truncate(self, angle):
+    def truncate_angle(self, angle):
         while angle < 0.0:
             angle += math.pi * 2
         return ((angle + math.pi) % (math.pi * 2)) - math.pi
             
 
 def main(args):
-    rospy.init_node('predictor', anonymous=True)
-    predictor = MotionPredictor()
+    rospy.init_node('output_predict', anonymous=True)
+    predictor = StateChanger()
     try:
         rospy.spin()
     except KeyboardInterrupt:
