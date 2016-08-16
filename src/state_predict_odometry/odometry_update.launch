@@ -1,0 +1,9 @@
+<launch>
+    <param name='x_init' value='0.0'/>
+    <param name='y_init' value='0.0'/>
+    <param name='theta_init' value='0.0'/>
+    <node pkg="state_predict_odometry" name="encoder_pub_node"       type="encoder_pub.py"          output="screen"/>
+    <node pkg="state_predict_odometry" name="distance_pub_node"      type="distance_pub.py"         output="screen"/>
+    <node pkg="state_predict_odometry" name="state_predict_pub_node" type="state_predict_pub.py"    output="screen"/>
+    <node pkg="state_predict_odometry" name="state_update_pub_node"  type="state_update_pub.py"    output="screen"/>
+</launch> 
