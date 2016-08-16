@@ -1,6 +1,5 @@
 #!/usr/bin/env  python
 from __future__ import print_function
-#import roslib; roslib.load_manifest('cv_image')
 import rospy
 from state_predict_odometry.msg import DistanceData, StateData
 import os

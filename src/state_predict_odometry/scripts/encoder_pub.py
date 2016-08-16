@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from __future__ import print_function
-#import roslib; roslib.load_manifest('cv_image')
 import rospy
 from state_predict_odometry.msg import EncoderData 
 import os
@@ -27,7 +26,6 @@ class Encoder:
         msg = EncoderData()
         
         while not rospy.is_shutdown():
-            #print(self.enc_read(0),self.enc_read(1))  #left,right wheel
             msg.left = self.enc_read(0)
             msg.right = self.enc_read(1)
             self.encoder_pub.publish(msg)  

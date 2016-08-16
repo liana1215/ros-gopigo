@@ -32,12 +32,6 @@ class StateUpdater:
             self.x = x_center + aux * math.sin(self.theta)
             self.y = y_center + aux * -1.*math.cos(self.theta)
 
-        #rospy.set_param('/x_init', self.x)
-        #rospy.set_param('/y_init', self.y)
-        #rospy.set_param('/theta_init', self.theta)
-
-
-
         state = State()
         state.x = self.x
         state.y = self.y
