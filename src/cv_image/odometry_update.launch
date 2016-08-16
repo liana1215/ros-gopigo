@@ -1,6 +1,0 @@
-<launch>
-    <node pkg="cv_image" name="output_encoder"   type="encoder_pub.py"   output="screen"/>
-    <node pkg="cv_image" name="encoder_distance" type="distance_pub.py" output="screen"/>
-    <node pkg="cv_image" name="state_update"     type="state_predict.py"     output="screen"/>
-    <node pkg="cv_image" name="output_predict"   type="state_sensor_update.py"   output="screen"/>
-</launch> 
