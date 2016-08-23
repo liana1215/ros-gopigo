@@ -2,6 +2,8 @@
 from __future__ import print_function
 import rospy
 from state_predict_odometry.msg import State
+import dynamic_reconfigure.client
+from state_predict_odometry.cfg import InitialstateConfig
 import os
 import sys
 import RPi.GPIO as GPIO
@@ -10,9 +12,14 @@ import time
 import random
 import math
 
+
+dyn_client = dynamic_reconfigure.client.Client("state_predict_pub_node", timeout=60)
+
 class CalcError:
  
-    def __init__(self, num_simulation):
+    def __init__(self):
+
+        print("dyn client ready")
         self.state_sub      = rospy.Subscriber("current_state", State, self.error_callback)
         self.address        = 0x08
         self.enc_read_cmd   = [53]
@@ -21,7 +28,6 @@ class CalcError:
         self.bus            = smbus.SMBus(1)
         self.circumference  = 0.2041
         self.encoder_nslots = 18.0
-        self.distance       = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
         self.velocity       = 0.1365
         self.x              = 0.0
         self.y              = 0.0
@@ -39,7 +45,7 @@ class CalcError:
         self.x     = state.x
         self.y     = state.y
         self.theta = state.theta
-        
+
 
     def motion_cmd(self, on):
         if on:
@@ -63,17 +69,19 @@ class CalcError:
  
     
 def simulation():
-    rospy.init_node('simulation_node', anonymous=True)
-    distance = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]
-    num_simulation = 1
-    robot = CalcError(1)
-    #reset initial state using parameter variables
+    rospy.init_node('simulation_node')
+    distance = [0.5, 1.0, 1.5, 2.0]
+    num_simulation = 3
+    robot = CalcError()
+    params = {"x_start":0.0, "y_start":0.0, "theta_start":0.0}
+
     xstart = robot.x 
     ystart = robot.y
     tstart = robot.theta
 
     for d in distance:
         for n in range(num_simulation):
+            
             xstart = robot.x 
             ystart = robot.y
             tstart = robot.theta
@@ -81,10 +89,18 @@ def simulation():
             robot.motion_cmd(1)
             time.sleep(t)
             robot.motion_cmd(0)
-            print(d, n, robot.x-xstart, robot.y-ystart, robot.truncate_angle(robot.theta-tstart))
+            str_data = "{} {} {} {} {}".format(d, 
+                                               n, 
+                                               robot.x-xstart, 
+                                               robot.y-ystart, 
+                                               robot.truncate_angle(robot.theta-tstart)
+                                              )
+            rospy.loginfo(str_data)
+            dyn_client.update_configuration(params) 
+            
     rospy.spin()
     
-   
+  
     
 if __name__=='__main__':
     simulation()
