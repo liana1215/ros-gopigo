@@ -12,10 +12,10 @@ class Encoder:
 
     def __init__(self):
         self.encoder_pub = rospy.Publisher("encoder_tick", EncoderData,queue_size=10)
-        self.address = 0x08             #set address
-        self.enc_read_cmd = [53]        #read the encoder value
-        self.bus = smbus.SMBus(1)       #initialize bus
-        self.rate = rospy.Rate(10)      #set spin rate
+        self.address        = 0x08             #set address
+        self.enc_read_cmd   = [53]             #read the encoder value
+        self.bus            = smbus.SMBus(1)   #initialize bus
+        self.rate           = rospy.Rate(10)   #set spin rate
   
         rev = GPIO.RPI_REVISION
         if rev == 2 or rev == 3:
@@ -26,7 +26,7 @@ class Encoder:
         msg = EncoderData()
         
         while not rospy.is_shutdown():
-            msg.left = self.enc_read(0)
+            msg.left  = self.enc_read(0)
             msg.right = self.enc_read(1)
             self.encoder_pub.publish(msg)  
 
@@ -41,12 +41,12 @@ class Encoder:
                 return -1
 
         try:
-            b1=self.bus.read_byte(self.address)
-            b2=self.bus.read_byte(self.address)
+            b1 = self.bus.read_byte(self.address)
+            b2 = self.bus.read_byte(self.address)
         except IOError:
             return -1
         if b1!=-1 and b2!=-1:
-            v=b1*256+b2
+            v = b1*256+b2
             return v
         else:
             return -1
